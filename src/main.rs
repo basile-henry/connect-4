@@ -63,9 +63,12 @@ impl Board {
         }
     }
 
-    fn place_in_column(&mut self, column: usize, player: Player) {
+    fn place_in_column(&mut self, column: usize, player: Player) -> bool {
         if let Some(row) = self.grid.iter_mut().rfind(|row| row[column].is_none()) {
             row[column] = Some(player);
+            true
+        } else {
+            false
         }
     }
 
@@ -73,8 +76,8 @@ impl Board {
         let it1 = self.grid.iter().flatten();
 
         let c_len = self.grid[0].len();
-        let it2 = self.grid.iter().flatten().step_by(c_len);
-        if check_layout(it1) || check_layout(it2) {
+        let it2 = |offset| self.grid.iter().flatten().skip(offset).step_by(c_len);
+        if check_layout(it1) || (0..c_len).any(|offset| check_layout(it2(offset))) {
             return true;
         }
         for i in 0..c_len {
@@ -139,13 +142,11 @@ fn Grid() -> impl IntoView {
                                             leptos::logging::log!("clicked {x} {y}");
                                             set_grid
                                                 .update(|b| {
-                                                    if !b.has_win() {
-                                                        b.place_in_column(y, cur_player.get());
+                                                    if !b.has_win() && b.place_in_column(y, cur_player.get()) {
                                                         set_cur_player.set(cur_player.get().other_player());
                                                     }
-                                                    leptos::logging::log!("{b:?}");
+
                                                     if b.has_win() {
-                                                        leptos::logging::log!("WIN!!!");
                                                         set_win_screen();
                                                     }
                                                 });
