@@ -42,6 +42,13 @@ impl Player {
             Self::B => Self::A,
         }
     }
+
+    pub fn show(&self) -> &'static str {
+        match self {
+            Player::A => "🔴",
+            Player::B => "🟡",
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -113,6 +120,7 @@ fn Grid() -> impl IntoView {
     let (cur_player, set_cur_player) = create_signal(Player::A);
 
     view! {
+        <h2 class="winner">Congratulations {move || format!("{}", cur_player.get().other_player().show()) }!</h2>
         <table style="margin: 0 auto;">
             {move || {
                 grid
@@ -133,6 +141,7 @@ fn Grid() -> impl IntoView {
                                                 .update(|b| {
                                                     if !b.has_win() {
                                                         b.place_in_column(y, cur_player.get());
+                                                        set_cur_player.set(cur_player.get().other_player());
                                                     }
                                                     leptos::logging::log!("{b:?}");
                                                     if b.has_win() {
@@ -140,19 +149,13 @@ fn Grid() -> impl IntoView {
                                                         set_win_screen();
                                                     }
                                                 });
-                                            set_cur_player.set(cur_player.get().other_player());
-                                        };
-                                        let idk = match tile {
-                                            Some(Player::A) => "🔴",
-                                            Some(Player::B) => "🟡",
-                                            None => "⚪",
                                         };
                                         view! {
                                             <td
                                                 on:click=user_click
                                                 style="cursor: crosshair; user-select: none;"
                                             >
-                                                {idk}
+                                                {tile.as_ref().map(Player::show).unwrap_or("⚪")}
                                             </td>
                                         }
                                     })

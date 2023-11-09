@@ -3,14 +3,25 @@
 
 <head>
     <style>
+        .winner {
+            display: none;
+        }
+
+        .game_finished .winner {
+            display: block;
+        }
+
         body {
             background-color: rgb(7, 101, 195)
         }
 
-        body {
+        body.game_finished {
             background:
                 linear-gradient(#0007, #0000),
                 #123;
+        }
+
+        body {
             margin: 0;
             height: 100vh;
             overflow: hidden;
@@ -23,7 +34,6 @@
         .game_finished .fireworks-wrapper {
             display: block;
         }
-
 
         @keyframes firework {
             0% {
@@ -178,10 +188,6 @@
             left: 70%;
             top: 60%;
             animation-delay: -0.4s;
-        }
-
-        body.game_finished {
-            background-color: magenta;
         }
     </style>
 </head>
