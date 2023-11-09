@@ -18,6 +18,11 @@ fn main() {
         view! {
             <div style="text-align: center; font-size: 80px; color: white;">
                 <h1>"Connect 4"</h1>
+                <div class="fireworks-wrapper">
+                    <div class="firework"></div>
+                    <div class="firework"></div>
+                    <div class="firework"></div>
+                </div>
                 <Grid/>
             </div>
         }
@@ -108,7 +113,7 @@ fn Grid() -> impl IntoView {
     let (cur_player, set_cur_player) = create_signal(Player::A);
 
     view! {
-        <table>
+        <table style="margin: 0 auto;">
             {move || {
                 grid
                     .get()
